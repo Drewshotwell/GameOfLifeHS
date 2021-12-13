@@ -1,46 +1,30 @@
 module Main where
 
 import Life
-import Graphics.Gloss
+import Render
+import Constants
+
+import System.Random
 import Data.List.Split (splitOn)
 
 main :: IO ()
 main = do
-    boardStr <- readFile "rndIndexes"
-    let initBoard = map (\s -> read s :: Int) . splitOn "\n" $ boardStr
-    print initBoard
-    --display (InWindow "Nice Window" screenDims (50, 50)) white (color black $ translate 23.0 22.0 $ scale 26.666666 26.666666 $ polygon $ [(-13.333333,-13.333333),(-13.333333,13.333333),(13.333333,13.333333),(13.333333,-13.333333)])
-    simulate window bgClr fps initBoard modelToPicture stepFunction
+    boardStr <- readFile "rndIndexes.txt"
+    coordStr <- readFile "coords.txt"
+    let initBoard1 = map (\s -> read s :: Int) . splitOn "\n" $ boardStr
+    let initBoard2 = map parseCoordStr . splitOn "\n" $ coordStr
+    initBoard3 <- sequence . replicate ((size*size) `div` 10) $ randomRIO (0, (size*size) - 1)
+    --displayLifeState initBoard2
+    simulateGameOfLife initBoard3
+            
+readInt :: String -> Int
+readInt s = read s :: Int
 
-size :: Int
-size = 30
+parseCoordStr :: String -> Int
+parseCoordStr =
+    coordToIndex .
+    (\xs -> (read (xs !! 0) :: Int, read (xs !! 1) :: Int)) .
+    splitOn ","
 
-screenDims :: (Int, Int)
-screenDims = (800, 800)
-
-bgClr :: Color
-bgClr = black
-
-fps :: Int
-fps = 1
-
-modelToPicture :: Board -> Picture
-modelToPicture b =
-    let indexesToCoords = map (flip divMod size) b -- [(Int, Int)]
-        scaleBy = (fromIntegral (fst screenDims) :: Float) / (fromIntegral size :: Float)
-        -- (Int, Int) -> Picture i.e. polygon (rectanglePath)
-        -- coordsToRect (x, y) = color white . translate (fromIntegral x :: Float) (fromIntegral y :: Float) . scale scaleBy scaleBy . polygon $ rectanglePath (scaleBy) (scaleBy)
-        coordsToRect (x, y) = 
-            color white . 
-            translate (fromIntegral x :: Float) (fromIntegral y :: Float) .
-            scale scaleBy scaleBy .
-            polygon $
-            rectanglePath (scaleBy) (scaleBy)
-    in  coordsToRect $ head indexesToCoords
-        --pictures $ map coordsToRect indexesToCoords
-
---stepFunction :: ViewPort -> Float -> Board -> Board
-stepFunction _ _ = nextBoard size
-
-window :: Display
-window = InWindow "Haskell Conway's Game of Life" screenDims (50, 50)
+coordToIndex :: (Int, Int) -> Int
+coordToIndex (x, y) = x*size + y

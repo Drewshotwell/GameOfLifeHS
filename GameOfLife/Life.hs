@@ -1,23 +1,20 @@
 module Life where
 
-import System.Random
+import Constants
+
 import Data.List
 
-type Board = [Int]
-
 nextBoard :: Int -> Board -> Board
-nextBoard size b = 
-    filter (\i ->
-        if i `elem` b then
-            numAdjacentCells i size b `elem` [2,3]
-        else
-            numAdjacentCells i size b == 3
-        )
-    [0..(size*size)]
+nextBoard size marked =
+    let unmarked = [0..(size*size)] \\ marked
+    in  filter (\i -> numAdjacentCells i size marked `elem` [2,3]) 
+            marked
+     ++ filter (\i -> numAdjacentCells i size marked == 3)
+            unmarked
 
 numAdjacentCells :: Int -> Int -> Board -> Int
-numAdjacentCells idx size b =
-    let bRowCol = map (flip divMod size) b
+numAdjacentCells idx size marked =
+    let bRowCol = map (flip divMod size) marked
         (idxRow, idxCol) = divMod idx size
     in  length $ [(iRow, iCol) | (iRow, iCol) <- bRowCol, 
             ((abs (iCol - idxCol) <= 1) && (abs (iRow - idxRow) == 1)) ||
