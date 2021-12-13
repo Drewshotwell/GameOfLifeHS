@@ -6,7 +6,7 @@ import Data.List
 
 nextBoard :: Int -> Board -> Board
 nextBoard size marked =
-    let unmarked = [0..(size*size)] \\ marked
+    let unmarked = [0..(size*size) - 1] \\ marked
     in  filter (\i -> numAdjacentCells i size marked `elem` [2,3]) 
             marked
      ++ filter (\i -> numAdjacentCells i size marked == 3)

@@ -2,6 +2,7 @@ module Render where
 
 import Constants
 import Life
+
 import Graphics.Gloss
 
 scaleBy :: Float
