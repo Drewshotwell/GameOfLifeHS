@@ -1,4 +1,6 @@
 *.o
 *.hi
+Main
+*.exe
 .vscode
 .DS_Store
