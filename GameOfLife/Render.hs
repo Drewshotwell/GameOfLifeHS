@@ -19,14 +19,11 @@ coordToRect (x, y) =
       rectanglePath 1 1
          where translateBy a = (-1)*( (fromIntegral screenDim :: Float) / 2) + scaleBy*(fromIntegral a :: Float) - scaleBy / 2
 
-displayLifeState :: Board -> IO () -- list of indexes to a snapshot of a game of life
-displayLifeState b = display window bgClr (modelToPicture b)
-
 simulateGameOfLife :: Board -> IO () -- list of initial indexes to the simulated game of life
 simulateGameOfLife b = simulate window bgClr fps b modelToPicture stepFunction
+   where 
+      window = InWindow "Conway's Game of Life HS" screenDims (50, 50)
+      bgClr = white
+      fps = 1
 
 stepFunction _ _ = nextBoard size
-
-window = InWindow "Haskell Conway's Game of Life" screenDims (50, 50)
-bgClr = white
-fps = 1

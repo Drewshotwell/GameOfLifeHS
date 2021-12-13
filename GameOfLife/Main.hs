@@ -5,7 +5,6 @@ import Render
 import Constants
 
 import System.Random
-import Data.List.Split (splitOn)
 
 main :: IO ()
 main = do
