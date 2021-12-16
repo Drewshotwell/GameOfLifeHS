@@ -27,4 +27,4 @@ simulateGameOfLife b = simulate window bgClr fps b modelToPicture stepFunction
       bgClr = white
       fps = 1
 
-stepFunction _ _ = nextBoard size
+stepFunction _ _ = nextBoard
